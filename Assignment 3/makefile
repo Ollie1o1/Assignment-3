@@ -8,7 +8,7 @@ all: musicalLL
 musicalLL: mainA3.o createPlayList.o addNewSong.o playPlayList.o playSongGivenId.o playSongGivenName.o countNotesInASong.o deleteASongGivenId.o deletePlayList.o
 	$(CC) $(CFLAGS) -o bin/musicalLL $^
 
-# Object file rules (explicit for clarity)
+# Object file rules
 mainA3.o: mainA3.c include/givenA3.h
 	$(CC) $(CFLAGS) -c mainA3.c -o mainA3.o
 
@@ -36,7 +36,8 @@ deleteASongGivenId.o: src/deleteASongGivenId.c include/givenA3.h
 deletePlayList.o: src/deletePlayList.c include/givenA3.h
 	$(CC) $(CFLAGS) -c src/deletePlayList.c -o deletePlayList.o
 
-# Clean command (works on Windows/PowerShell)
+# Clean command (deletes .o files in root and src folders)
 clean:
 	del /Q *.o 2>NUL
+	del /Q src\*.o 2>NUL
 	del /Q bin\musicalLL 2>NUL
