@@ -13,15 +13,15 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h> // For tolower()
+#include <ctype.h>
 
 // Helper function to convert a string to lowercase
-void toLowerString(char *str) {
+static void toLowerString(char *str) {
     for (int i = 0; str[i]; i++) {
-        str[i] = tolower(str[i]);
+        str[i] = (char)tolower((unsigned char)str[i]);
     }
 }
 
@@ -34,13 +34,14 @@ int playSongGivenName(A3Song *headLL, char givenSongName[MAX_LENGTH]) {
     strcpy(lowerGivenName, givenSongName);
     toLowerString(lowerGivenName);
 
+    // Search the list
     while (current != NULL) {
-        // Convert current song name to lowercase
+        // Convert the current song's name to lowercase
         strcpy(lowerCurrentName, current->songName);
         toLowerString(lowerCurrentName);
 
-        // Compare lowercase names
         if (strcmp(lowerCurrentName, lowerGivenName) == 0) {
+            // Found match
             printf("Song ID: %d\n", current->songId);
             printf("Song Name: %s\n", current->songName);
             printf("Notes: ");
@@ -51,9 +52,10 @@ int playSongGivenName(A3Song *headLL, char givenSongName[MAX_LENGTH]) {
                 }
             }
             printf("\n");
-            return 1; // Found
+            return 1;
         }
         current = current->nextSong;
     }
+
     return -1; // Not found
 }

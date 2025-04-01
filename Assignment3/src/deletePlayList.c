@@ -13,7 +13,7 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <stdlib.h>
 
 void deletePlayList(A3Song **headLL) {

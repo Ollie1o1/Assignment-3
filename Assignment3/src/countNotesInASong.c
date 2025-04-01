@@ -13,13 +13,14 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <string.h>
 
 int countNotesInASong(A3Song *headLL, int givenSongId, char whichNote[4]) {
     A3Song *current = headLL;
     while (current != NULL) {
         if (current->songId == givenSongId) {
+            // Found the song
             int count = 0;
             for (int i = 0; i < 21; i++) {
                 if (strcmp(current->songNotes[i], whichNote) == 0) {
@@ -30,5 +31,6 @@ int countNotesInASong(A3Song *headLL, int givenSongId, char whichNote[4]) {
         }
         current = current->nextSong;
     }
+    // If we never found a matching song ID, return -1
     return -1;
 }

@@ -1,43 +1,79 @@
-# Compiler and flags
+# Copyright 2025 daman
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     https://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# There are two makefiles in this one
+# One is for test cases and the other is for the main code
+# The test cases makefile is active (line #23-#41)
+# The main code makefile is commented out (line #44-#68)
+
+
+
+#################################
+# 1. Compiler & Flags
+#################################
 CC = gcc
-CFLAGS = -std=c99 -Wall -Iinclude
+CFLAGS = -Wall -std=c99 -w -Iinclude
 
-# Targets
-all: musicalLL
+#################################
+# 2. MAIN BUILD
+#################################
 
-musicalLL: mainA3.o createPlayList.o addNewSong.o playPlayList.o playSongGivenId.o playSongGivenName.o countNotesInASong.o deleteASongGivenId.o deletePlayList.o
-	$(CC) $(CFLAGS) -o bin/musicalLL $^
+# We manually list the .c files for the main program:
+MAIN_SRCS = src/mainA3.c src/playPlayList.c src/deleteASongGivenId.c \
+            src/deletePlayList.c src/playSongGivenId.c \
+            src/playSongGivenName.c src/addNewSong.c src/createPlayList.c \
+            src/countNotesInASong.c
 
-# Object file rules
-mainA3.o: mainA3.c include/givenA3.h
-	$(CC) $(CFLAGS) -c mainA3.c -o mainA3.o
+MAIN_OBJS = $(MAIN_SRCS:.c=.o)
 
-createPlayList.o: src/createPlayList.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/createPlayList.c -o createPlayList.o
+#comment the following 41,43,44 lines to run the test cases
+all: bin/musicalLL
 
-addNewSong.o: src/addNewSong.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/addNewSong.c -o addNewSong.o
+bin/musicalLL: bin $(MAIN_OBJS)
+	$(CC) $(CFLAGS) -o bin/musicalLL $(MAIN_OBJS)
 
-playPlayList.o: src/playPlayList.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/playPlayList.c -o playPlayList.o
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-playSongGivenId.o: src/playSongGivenId.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/playSongGivenId.c -o playSongGivenId.o
+bin:
+	if not exist bin mkdir bin
 
-playSongGivenName.o: src/playSongGivenName.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/playSongGivenName.c -o playSongGivenName.o
+#################################
+# 3. HARNESS BUILD
+#################################
+# The harness includes the .c files from src internally, so we do NOT compile them again.
+# We only compile the harness .c files themselves.
 
-countNotesInASong.o: src/countNotesInASong.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/countNotesInASong.c -o countNotesInASong.o
+test: bin bin/test
 
-deleteASongGivenId.o: src/deleteASongGivenId.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/deleteASongGivenId.c -o deleteASongGivenId.o
+bin/test: TestCode.o unity.o TestCodeRunner.o
+	$(CC) $(CFLAGS) -o bin/test TestCode.o unity.o TestCodeRunner.o -lm
 
-deletePlayList.o: src/deletePlayList.c include/givenA3.h
-	$(CC) $(CFLAGS) -c src/deletePlayList.c -o deletePlayList.o
+TestCode.o: harness/TestCode.c harness/unity.h harness/CodeUnderTest.h
+	$(CC) $(CFLAGS) -c harness/TestCode.c
 
-# Clean command (deletes .o files in root and src folders)
+unity.o: harness/unity.c harness/unity.h
+	$(CC) $(CFLAGS) -c harness/unity.c
+
+TestCodeRunner.o: harness/TestCodeRunner.c harness/unity.h
+	$(CC) $(CFLAGS) -c harness/TestCodeRunner.c
+
+#################################
+# 4. CLEAN
+#################################
 clean:
 	del /Q *.o 2>NUL
-	del /Q src\*.o 2>NUL
-	del /Q bin\musicalLL 2>NUL
+	del /Q src\\*.o 2>NUL
+	del /Q bin\\* 2>NUL

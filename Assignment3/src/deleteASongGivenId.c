@@ -13,7 +13,7 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <stdlib.h>
 
 int deleteASongGivenId(A3Song **headLL, int givenSongId) {
@@ -22,9 +22,12 @@ int deleteASongGivenId(A3Song **headLL, int givenSongId) {
 
     while (current != NULL) {
         if (current->songId == givenSongId) {
+            // Found the song to delete
             if (prev == NULL) {
+                // Deleting the head
                 *headLL = current->nextSong;
             } else {
+                // Deleting from the middle or end
                 prev->nextSong = current->nextSong;
             }
             free(current);
@@ -33,5 +36,6 @@ int deleteASongGivenId(A3Song **headLL, int givenSongId) {
         prev = current;
         current = current->nextSong;
     }
+    // Not found
     return -1;
 }

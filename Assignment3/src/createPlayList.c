@@ -13,7 +13,7 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,40 +21,50 @@ by me in its entirety.
 int createPlayList(A3Song **headLL, char fileName[MAX_LENGTH]) {
     FILE *file = fopen(fileName, "r");
     if (file == NULL) {
-        return -1; // File not found
+        // File not found
+        return -1;
     }
 
     char line[500];
     int numSongs = 0;
 
-    // Skip header line
+    // Skip a header line if the CSV has one
     fgets(line, sizeof(line), file);
 
     while (fgets(line, sizeof(line), file)) {
         A3Song *newSong = malloc(sizeof(A3Song));
         if (newSong == NULL) {
+            // Partial load if we run out of memory
             fclose(file);
-            return numSongs; // Partial load
+            return numSongs;
         }
 
-        // Parse CSV line
+        // Parse song name (first token)
         char *token = strtok(line, ",");
+        if (token == NULL) {
+            free(newSong);
+            continue; 
+        }
         strcpy(newSong->songName, token);
 
-        // Generate songId: strlen(name) + random 1-1000
+        // Generate Song ID (basic approach for uniqueness)
         newSong->songId = strlen(newSong->songName) + (rand() % 1000 + 1);
 
-        // Parse 21 notes
+        // Parse the 21 notes from CSV
         for (int i = 0; i < 21; i++) {
             token = strtok(NULL, ",\r\n");
             if (token) {
                 strcpy(newSong->songNotes[i], token);
+            } else {
+                // If fewer than 21 tokens, fill the rest with something, e.g. empty
+                strcpy(newSong->songNotes[i], "");
             }
         }
 
-        // Insert at BEGINNING of list
+        // Insert newSong at the beginning of the linked list
         newSong->nextSong = *headLL;
         *headLL = newSong;
+
         numSongs++;
     }
 

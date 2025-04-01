@@ -13,7 +13,7 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <stdio.h>
 
 void playPlayList(A3Song *headLL) {
@@ -23,7 +23,10 @@ void playPlayList(A3Song *headLL) {
         printf("Song Name: %s\n", current->songName);
         printf("Notes: ");
         for (int i = 0; i < 21; i++) {
-            printf("%s.", current->songNotes[i]);
+            printf("%s", current->songNotes[i]);
+            if (i < 20) {
+                printf(".");
+            }
         }
         printf("\n\n");
         current = current->nextSong;

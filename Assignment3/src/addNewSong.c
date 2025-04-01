@@ -13,7 +13,7 @@ any and all material that I have used, be it directly quoted or
 paraphrased. Furthermore, I certify that this assignment was written
 by me in its entirety.
 */
-#include "../include/givenA3.h"
+#include "givenA3.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,15 +21,15 @@ by me in its entirety.
 bool addNewSong(A3Song **headLL, int beginOrEnd) {
     A3Song *newSong = malloc(sizeof(A3Song));
     if (newSong == NULL) {
-        return false;
+        return false; // Memory allocation failure
     }
 
-    // Get song name
+    // Prompt user for song name
     printf("Enter song name: ");
     scanf(" %[^\n]", newSong->songName);
 
-    // Generate songId
-    newSong->songId = strlen(newSong->songName) + (rand() % 1000 + 1);
+    // Generate songId (ensure you call srand() in main)
+    newSong->songId = (int)strlen(newSong->songName) + (rand() % 1000 + 1);
 
     // Generate 21 random notes
     const char *notes[] = {"do", "re", "mi", "fa", "sol", "la", "ti"};
@@ -38,13 +38,16 @@ bool addNewSong(A3Song **headLL, int beginOrEnd) {
         strcpy(newSong->songNotes[i], notes[noteIndex]);
     }
 
-    // Insert at beginning or end
+    // Insert either at the beginning or the end
     if (beginOrEnd == 1) {
+        // Beginning
         newSong->nextSong = *headLL;
         *headLL = newSong;
     } else if (beginOrEnd == 2) {
+        // End
         newSong->nextSong = NULL;
         if (*headLL == NULL) {
+            // If the list is empty, newSong is now head
             *headLL = newSong;
         } else {
             A3Song *temp = *headLL;
@@ -54,6 +57,7 @@ bool addNewSong(A3Song **headLL, int beginOrEnd) {
             temp->nextSong = newSong;
         }
     } else {
+        // Invalid beginOrEnd
         free(newSong);
         return false;
     }
